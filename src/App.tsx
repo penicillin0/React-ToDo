@@ -1,24 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { ThemeProvider, createTheme } from "ingred-ui";
+import "./App.css";
+import TaskList from "./pages/TaskList";
 
 function App() {
+  const theme = createTheme();
+  const tasks = [
+    {
+      title: "A",
+    },
+    {
+      title: "B",
+    },
+  ];
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <ThemeProvider theme={theme}>
+        <TaskList tasks={tasks}></TaskList>
+      </ThemeProvider>
     </div>
   );
 }
