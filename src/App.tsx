@@ -7,9 +7,11 @@ function App() {
   const theme = createTheme();
   const tasks = [
     {
+      id: 1,
       title: "A",
     },
     {
+      id: 2,
       title: "B",
     },
   ];
