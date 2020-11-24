@@ -1,7 +1,9 @@
 import React from "react";
 import { ThemeProvider, createTheme } from "ingred-ui";
 import "./App.css";
-import TaskList from "./pages/TaskList";
+import { TaskList } from "./pages/TaskList";
+import { Provider } from "react-redux";
+import { cofigureStore } from "./store";
 
 function App() {
   const theme = createTheme();
@@ -15,11 +17,14 @@ function App() {
       title: "B",
     },
   ];
+  const store = cofigureStore();
   return (
     <div>
-      <ThemeProvider theme={theme}>
-        <TaskList tasks={tasks}></TaskList>
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <TaskList tasks={tasks}></TaskList>
+        </ThemeProvider>
+      </Provider>
     </div>
   );
 }

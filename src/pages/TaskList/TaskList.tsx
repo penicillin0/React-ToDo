@@ -1,17 +1,13 @@
 import React, { useState } from "react";
-import Task from "../components/Task";
+import Task from "../../components/Task";
 import { Card, ButtonGroup, Button, ConfirmModal, Input } from "ingred-ui";
+import { Todo } from "../../types";
 
 type Props = {
-  tasks: Tasktype[];
+  tasks: Todo[];
 };
 
-type Tasktype = {
-  id: number;
-  title: string;
-};
-
-const TaskList: React.FC<Props> = (props) => {
+export const TaskList: React.FC<Props> = (props) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const tasks = props.tasks;
   const handleIsCreateModalOpen = (isCreateModalOpen: boolean) => {
@@ -20,7 +16,7 @@ const TaskList: React.FC<Props> = (props) => {
 
   return (
     <div>
-      {tasks.map((task: Tasktype) => (
+      {tasks.map((task: Todo) => (
         <Card p={3}>
           <Task id={task.id} title={task.title}></Task>
           <ButtonGroup size="small">
@@ -46,5 +42,3 @@ const TaskList: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-export default TaskList;
