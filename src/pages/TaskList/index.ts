@@ -1,8 +1,7 @@
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { RootState } from "../../store";
-import { addTodo } from "../../store/todo/actions";
-import { Todo } from "../../types";
+import { addTodo, deleteTodo } from "../../store/todo/actions";
 import { TaskList as Component } from "./TaskList";
 
 const mapStateToProps = (state: RootState) => {
@@ -13,8 +12,8 @@ const mapStateToProps = (state: RootState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    addTodo: (todo: Todo) => dispatch(addTodo(todo)),
-    // deleteTodo: ()
+    addTodo: (todo: string) => dispatch(addTodo(todo)),
+    deleteTodo: (id: number) => dispatch(deleteTodo(id)),
   };
 };
 

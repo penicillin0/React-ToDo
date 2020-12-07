@@ -1,9 +1,9 @@
 import { createStore } from "redux";
-import { createRootReducer } from "./reducer";
+import { todoReducer, TodoState } from "./todo/reducers";
 
 export function cofigureStore() {
-  const store = createStore(createRootReducer());
+  const store = createStore(todoReducer);
   return store;
 }
 
-export type RootState = ReturnType<ReturnType<typeof createRootReducer>>;
+export type RootState = TodoState;

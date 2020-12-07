@@ -2,20 +2,26 @@ import { reducerWithInitialState } from "typescript-fsa-reducers";
 import { addTodo, deleteTodo } from "../actions";
 import { Todo } from "../../../types";
 
-type TodoState = {
+export type TodoState = {
+  nextId: number;
   todos: Todo[];
 };
 
 const initialState: TodoState = {
+  nextId: 0,
   todos: [],
 };
 
 export const todoReducer = reducerWithInitialState(initialState)
-  .case(addTodo, (state, addindTodo: Todo) => ({
+  .case(addTodo, (state, addindTodo) => ({
     ...state,
-    allTodos: state.todos.concat(addindTodo),
+    nextId: state.nextId + 1,
+    todos: state.todos.concat({
+      id: state.nextId,
+      title: addindTodo,
+    }),
   }))
   .case(deleteTodo, (state, deleteTodoNumber: number) => ({
     ...state,
-    allTodos: state.todos.filter((todo) => todo.id !== deleteTodoNumber),
+    todos: state.todos.filter((todo) => todo.id !== deleteTodoNumber),
   }));
