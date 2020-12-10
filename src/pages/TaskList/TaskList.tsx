@@ -70,6 +70,7 @@ export const TaskList: React.FC<Props> = ({
             placeholder="task"
             ref={register({ required: true })}
             name="title"
+            autoFocus={true}
           />
         </ConfirmModal>
       )}

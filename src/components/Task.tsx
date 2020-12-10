@@ -39,6 +39,7 @@ const Task: React.FC<Props> = ({ id, title, handleDelete, handleEdit }) => {
             value={inputValue}
             onChange={(e) => handleInputChange(e.target.value)}
             ref={register({ required: true })}
+            autoFocus={true}
           ></input>
           <ButtonGroup size="small">
             <Button onClick={handleSubmit(handleApplyEdit)}>適用</Button>
