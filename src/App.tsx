@@ -7,22 +7,12 @@ import { cofigureStore } from "./store";
 
 function App() {
   const theme = createTheme();
-  const tasks = [
-    {
-      id: 1,
-      title: "A",
-    },
-    {
-      id: 2,
-      title: "B",
-    },
-  ];
   const store = cofigureStore();
   return (
     <div>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <TaskList tasks={tasks}></TaskList>
+          <TaskList></TaskList>
         </ThemeProvider>
       </Provider>
     </div>
