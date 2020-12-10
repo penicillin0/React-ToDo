@@ -4,6 +4,7 @@ import "./App.css";
 import { TaskList } from "./pages/TaskList";
 import { Provider } from "react-redux";
 import { cofigureStore } from "./store";
+import Header from "./components/Header";
 
 function App() {
   const theme = createTheme();
@@ -12,6 +13,7 @@ function App() {
     <div>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
+          <Header />
           <TaskList></TaskList>
         </ThemeProvider>
       </Provider>

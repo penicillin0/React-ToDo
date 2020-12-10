@@ -3,12 +3,15 @@ import Task from "../../components/Task";
 import { Button, ConfirmModal, Input } from "ingred-ui";
 import { Todo } from "../../types";
 import { useForm } from "react-hook-form";
+import styled from "styled-components";
+import TaskStatus from "../../components/TaskStatus";
 
 type Props = {
   todos: Todo[];
   addTodo: (title: string) => void;
   deleteTodo: (id: number) => void;
   editTodo: (id: number, title: string) => void;
+  checkTodo: (id: number) => void;
 };
 
 type CreateTodoForm = {
@@ -20,6 +23,7 @@ export const TaskList: React.FC<Props> = ({
   addTodo,
   deleteTodo,
   editTodo,
+  checkTodo,
 }) => {
   const { register, handleSubmit, errors } = useForm();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
@@ -41,23 +45,42 @@ export const TaskList: React.FC<Props> = ({
     editTodo(id, title);
   };
 
+  const onCheck = (id: number) => {
+    checkTodo(id);
+  };
+
   useEffect(() => {
     console.log(todos);
   }, [todos]);
 
   return (
-    <div>
-      {todos.map((task: Todo) => (
-        <Task
-          id={task.id}
-          title={task.title}
-          handleDelete={onDelete}
-          handleEdit={onEdit}
-        ></Task>
-      ))}
-      <Button inline size="small" onClick={() => handleIsCreateModalOpen(true)}>
-        追加
-      </Button>
+    <MainContainer>
+      <TaskStatus todos={todos}></TaskStatus>
+      <AddButtonContainer>
+        <Button
+          inline
+          size="large"
+          onClick={() => handleIsCreateModalOpen(true)}
+        >
+          追加
+        </Button>
+      </AddButtonContainer>
+      <TaskListWrapper>
+        {todos.map((task: Todo) => (
+          <div>
+            <Task
+              key={task.id}
+              id={task.id}
+              title={task.title}
+              isFinish={task.isFinish}
+              handleDelete={onDelete}
+              handleEdit={onEdit}
+              handleCheck={onCheck}
+            ></Task>
+            <TaskSplitLine />
+          </div>
+        ))}
+      </TaskListWrapper>
       {isCreateModalOpen && (
         <ConfirmModal
           title="タスクの追加"
@@ -74,6 +97,26 @@ export const TaskList: React.FC<Props> = ({
           />
         </ConfirmModal>
       )}
-    </div>
+    </MainContainer>
   );
 };
+
+const TaskListWrapper = styled.div`
+  align-items: center;
+`;
+
+const AddButtonContainer = styled.div`
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+`;
+
+const MainContainer = styled.div`
+  padding: 6%;
+`;
+
+const TaskSplitLine = styled.hr`
+  border: 0;
+  border-bottom: 1px dashed;
+`;
