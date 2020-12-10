@@ -12,6 +12,7 @@ type Props = {
 const Task: React.FC<Props> = ({ id, title, handleDelete, handleEdit }) => {
   const { register, handleSubmit, errors } = useForm();
   const [isEditting, setIsEditting] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>(title);
 
   const task = { id, title };
 
@@ -24,6 +25,10 @@ const Task: React.FC<Props> = ({ id, title, handleDelete, handleEdit }) => {
     handleEdit(id, data.title);
   };
 
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+  };
+
   return (
     <div>
       {isEditting ? (
@@ -31,8 +36,8 @@ const Task: React.FC<Props> = ({ id, title, handleDelete, handleEdit }) => {
           <input
             name="title"
             type="text"
-            // value={task.title}
-            // onChange={handleInputChange}
+            value={inputValue}
+            onChange={(e) => handleInputChange(e.target.value)}
             ref={register({ required: true })}
           ></input>
           <ButtonGroup size="small">
