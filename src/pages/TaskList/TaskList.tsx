@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Task from "../../components/Task";
-import { Card, ButtonGroup, Button, ConfirmModal, Input } from "ingred-ui";
+import { Button, ConfirmModal, Input } from "ingred-ui";
 import { Todo } from "../../types";
 import { useForm } from "react-hook-form";
 
@@ -8,13 +8,19 @@ type Props = {
   todos: Todo[];
   addTodo: (title: string) => void;
   deleteTodo: (id: number) => void;
+  editTodo: (id: number, title: string) => void;
 };
 
 type CreateTodoForm = {
   title: string;
 };
 
-export const TaskList: React.FC<Props> = ({ todos, addTodo, deleteTodo }) => {
+export const TaskList: React.FC<Props> = ({
+  todos,
+  addTodo,
+  deleteTodo,
+  editTodo,
+}) => {
   const { register, handleSubmit, errors } = useForm();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
@@ -27,20 +33,27 @@ export const TaskList: React.FC<Props> = ({ todos, addTodo, deleteTodo }) => {
     setIsCreateModalOpen(false);
   };
 
-  const handleDlete = (id: number) => {
+  const onDelete = (id: number) => {
     deleteTodo(id);
   };
+
+  const onEdit = (id: number, title: string) => {
+    editTodo(id, title);
+  };
+
+  useEffect(() => {
+    console.log(todos);
+  }, [todos]);
 
   return (
     <div>
       {todos.map((task: Todo) => (
-        <Card p={3}>
-          <Task id={task.id} title={task.title}></Task>
-          <ButtonGroup size="small">
-            <Button onClick={() => console.log("編集")}>編集</Button>
-            <Button onClick={() => handleDlete(task.id)}>削除</Button>
-          </ButtonGroup>
-        </Card>
+        <Task
+          id={task.id}
+          title={task.title}
+          handleDelete={onDelete}
+          handleEdit={onEdit}
+        ></Task>
       ))}
       <Button inline size="small" onClick={() => handleIsCreateModalOpen(true)}>
         追加
