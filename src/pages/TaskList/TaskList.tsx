@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Task from "../../components/Task";
-import { Button, ConfirmModal, Input } from "ingred-ui";
+import { Button, ConfirmModal, Divider, Input, Spacer } from "ingred-ui";
 import { Todo } from "../../types";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import TaskStatus from "../../components/TaskStatus";
+import { findAllByAltText } from "@testing-library/react";
 
 type Props = {
   todos: Todo[];
@@ -14,10 +15,6 @@ type Props = {
   checkTodo: (id: number) => void;
 };
 
-type CreateTodoForm = {
-  title: string;
-};
-
 export const TaskList: React.FC<Props> = ({
   todos,
   addTodo,
@@ -25,16 +22,18 @@ export const TaskList: React.FC<Props> = ({
   editTodo,
   checkTodo,
 }) => {
-  const { register, handleSubmit, errors } = useForm();
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
-
-  const handleIsCreateModalOpen = (isCreateModalOpen: boolean) => {
-    setIsCreateModalOpen(isCreateModalOpen);
-  };
-
-  const onHandleSubmit = (data: CreateTodoForm) => {
-    addTodo(data.title);
-    setIsCreateModalOpen(false);
+  const [inputTaskValue, setInputTaskValue] = useState<string>();
+  const [isInputError, setIsInputError] = useState<boolean>(false);
+  const [isDisplayFinishTask, setIsDisplayFinishTask] = useState<boolean>(
+    false
+  );
+  const onHandleSubmit = (value: string | undefined) => {
+    if (value === undefined || value === "") {
+      setIsInputError(true);
+      return;
+    }
+    addTodo(value);
+    setInputTaskValue("");
   };
 
   const onDelete = (id: number) => {
@@ -49,6 +48,19 @@ export const TaskList: React.FC<Props> = ({
     checkTodo(id);
   };
 
+  const handleInputChange = (value: string) => {
+    setIsInputError(false);
+    setInputTaskValue(value);
+  };
+
+  const placeholderMsg = (isError: boolean): string => {
+    if (isError) {
+      return "空文字は追加できません";
+    } else {
+      return "追加したいタスク名を入力してください";
+    }
+  };
+
   useEffect(() => {
     console.log(todos);
   }, [todos]);
@@ -56,56 +68,98 @@ export const TaskList: React.FC<Props> = ({
   return (
     <MainContainer>
       <TaskStatus todos={todos}></TaskStatus>
-      <AddButtonContainer>
-        <Button
-          inline
-          size="large"
-          onClick={() => handleIsCreateModalOpen(true)}
-        >
-          追加
-        </Button>
-      </AddButtonContainer>
+      <InputContainer>
+        <Input
+          error={isInputError}
+          value={inputTaskValue}
+          placeholder={placeholderMsg(isInputError)}
+          name="title"
+          type="text"
+          autoFocus={true}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleInputChange(e.target.value)
+          }
+          width="80%"
+          onSubmit={() => onHandleSubmit}
+          onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              onHandleSubmit(inputTaskValue);
+            }
+          }}
+        />
+      </InputContainer>
+
       <TaskListWrapper>
-        {todos.map((task: Todo) => (
-          <div>
-            <Task
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              isFinish={task.isFinish}
-              handleDelete={onDelete}
-              handleEdit={onEdit}
-              handleCheck={onCheck}
-            ></Task>
-            <TaskSplitLine />
-          </div>
-        ))}
+        {todos
+          .filter((task: Todo) => {
+            return !task.isFinish;
+          })
+          .map((task: Todo) => (
+            <div>
+              <Task
+                key={task.id}
+                id={task.id}
+                title={task.title}
+                isFinish={task.isFinish}
+                handleDelete={onDelete}
+                handleEdit={onEdit}
+                handleCheck={onCheck}
+              ></Task>
+              <TaskSplitLine />
+            </div>
+          ))}
       </TaskListWrapper>
-      {isCreateModalOpen && (
-        <ConfirmModal
-          title="タスクの追加"
-          onClose={() => setIsCreateModalOpen(false)}
-          onSubmit={handleSubmit(onHandleSubmit)}
-          confirmText="登録"
-          cancelText="戻る"
+      <Spacer pt={3}></Spacer>
+      <VisibleButtonContainer>
+        <Button
+          onClick={() => setIsDisplayFinishTask(!isDisplayFinishTask)}
+          size="small"
+          color="secondary"
         >
-          <Input
-            placeholder="task"
-            ref={register({ required: true })}
-            name="title"
-            autoFocus={true}
-          />
-        </ConfirmModal>
+          {isDisplayFinishTask
+            ? "完了済みのタスクを非表示にする"
+            : "完了済みのタスクを表示"}
+        </Button>
+      </VisibleButtonContainer>
+      {isDisplayFinishTask ? (
+        <TaskListWrapper>
+          {todos
+            .filter((task: Todo) => {
+              return task.isFinish;
+            })
+            .map((task: Todo) => (
+              <div>
+                <Task
+                  key={task.id}
+                  id={task.id}
+                  title={task.title}
+                  isFinish={task.isFinish}
+                  handleDelete={onDelete}
+                  handleEdit={onEdit}
+                  handleCheck={onCheck}
+                ></Task>
+                <TaskSplitLine />
+              </div>
+            ))}
+        </TaskListWrapper>
+      ) : (
+        <div></div>
       )}
     </MainContainer>
   );
 };
 
+const VisibleButtonContainer = styled.div`
+  width: 30%;
+  margin: 0 auto;
+`;
+
 const TaskListWrapper = styled.div`
   align-items: center;
 `;
 
-const AddButtonContainer = styled.div`
+const InputContainer = styled.div`
   text-align: center;
   padding-top: 10px;
   padding-bottom: 10px;

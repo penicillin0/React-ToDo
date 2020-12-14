@@ -45,10 +45,8 @@ const Task: React.FC<Props> = ({
   };
 
   const handleApplyCheck = () => {
-    console.log(isFinish, isChecked);
     setIsChecked(!isFinish);
     handleCheck(id);
-    console.log(isFinish, isChecked);
   };
   return (
     <div>
