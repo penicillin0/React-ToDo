@@ -53,7 +53,7 @@ export const todoReducer = reducerWithInitialState(initialState)
         if (todo.id !== id) {
           return todo;
         } else {
-          return { id: id, title: title, isFinish: false };
+          return { id: id, title: title, isFinish: todo.isFinish };
         }
       }),
     };

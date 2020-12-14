@@ -49,7 +49,6 @@ const Task: React.FC<Props> = ({
       setIsInputError(true);
       return;
     }
-    console.log(value);
     setIsEditting(false);
     handleEdit(id, value);
     setInputValue(value);
