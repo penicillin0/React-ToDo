@@ -167,5 +167,6 @@ const MainContainer = styled.div`
   padding-top: 5%;
   padding-right: 2%;
   padding-left: 2%;
+  padding-bottom: 10%;
   background-color: whitesmoke;
 `;

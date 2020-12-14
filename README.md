@@ -1,3 +1,7 @@
+# 概要
+
+React + TS + [ingred-ui](https://github.com/voyagegroup/ingred-ui)で練習
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
