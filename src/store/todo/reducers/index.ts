@@ -7,27 +7,52 @@ export type TodoState = {
   todos: Todo[];
 };
 
-const initialState: TodoState = {
-  nextId: 0,
-  todos: [],
+const getInitialFromLocal = () => {
+  if (localStorage.getItem("local") === null) {
+    return {
+      nextId: 0,
+      todos: [],
+    };
+  } else {
+    return {
+      nextId: Number(
+        JSON.parse(localStorage.getItem("local") as string).nextId
+      ),
+      todos: JSON.parse(localStorage.getItem("local") as string).todos,
+    };
+  }
 };
+const initialState: TodoState = getInitialFromLocal();
+
+console.log("ini");
+console.log(initialState);
 
 export const todoReducer = reducerWithInitialState(initialState)
-  .case(addTodo, (state, addindTodo) => ({
-    ...state,
-    nextId: state.nextId + 1,
-    todos: state.todos.concat({
-      id: state.nextId,
-      title: addindTodo,
-      isFinish: false,
-    }),
-  }))
-  .case(deleteTodo, (state, deleteTodoNumber) => ({
-    ...state,
-    todos: state.todos.filter((todo) => todo.id !== deleteTodoNumber),
-  }))
+  .case(addTodo, (state, addindTodo) => {
+    const newState = {
+      ...state,
+      nextId: state.nextId + 1,
+      todos: state.todos.concat({
+        id: state.nextId,
+        title: addindTodo,
+        isFinish: false,
+      }),
+    };
+    console.log(newState);
+    console.log(JSON.stringify(newState));
+    localStorage.setItem("local", JSON.stringify(newState));
+    return newState;
+  })
+  .case(deleteTodo, (state, deleteTodoNumber) => {
+    const newState = {
+      ...state,
+      todos: state.todos.filter((todo) => todo.id !== deleteTodoNumber),
+    };
+    localStorage.setItem("local", JSON.stringify(newState));
+    return newState;
+  })
   .case(editTodo, (state, { id, title }) => {
-    return {
+    const newState = {
       ...state,
       todos: state.todos.map((todo) => {
         if (todo.id !== id) {
@@ -37,9 +62,11 @@ export const todoReducer = reducerWithInitialState(initialState)
         }
       }),
     };
+    localStorage.setItem("local", JSON.stringify(newState));
+    return newState;
   })
   .case(checkTodo, (state, id) => {
-    return {
+    const newState = {
       ...state,
       todos: state.todos.map((todo) => {
         if (todo.id !== id) {
@@ -49,4 +76,6 @@ export const todoReducer = reducerWithInitialState(initialState)
         }
       }),
     };
+    localStorage.setItem("local", JSON.stringify(newState));
+    return newState;
   });
