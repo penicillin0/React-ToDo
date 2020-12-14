@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Card, ButtonGroup, Button, Input, Checkbox } from "ingred-ui";
-import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
 type Props = {
@@ -20,10 +19,10 @@ const Task: React.FC<Props> = ({
   handleEdit,
   handleCheck,
 }) => {
-  const { register, handleSubmit, errors } = useForm();
   const [isEditting, setIsEditting] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>(title);
   const [isChecked, setIsChecked] = useState<boolean>(isFinish);
+  const [isInputError, setIsInputError] = useState<boolean>(false);
 
   const task = { id, title };
 
@@ -31,13 +30,9 @@ const Task: React.FC<Props> = ({
     setIsEditting(true);
   };
 
-  const handleApplyEdit = (data: { title: string }) => {
-    setIsEditting(false);
-    handleEdit(id, data.title);
-  };
-
   const handleInputChange = (value: string) => {
     setInputValue(value);
+    setIsInputError(false);
   };
 
   const handleCancelEdit = () => {
@@ -48,10 +43,22 @@ const Task: React.FC<Props> = ({
     setIsChecked(!isFinish);
     handleCheck(id);
   };
+
+  const onHandleSubmit = (value: string | undefined) => {
+    if (value === undefined || value === "") {
+      setIsInputError(true);
+      return;
+    }
+    console.log(value);
+    setIsEditting(false);
+    handleEdit(id, value);
+    setInputValue(value);
+  };
+
   return (
     <div>
       {isEditting ? (
-        <Card p={3}>
+        <Card p={2}>
           <CardContent>
             <CheckboxContainer>
               <Checkbox
@@ -59,26 +66,35 @@ const Task: React.FC<Props> = ({
                 onChange={handleApplyCheck}
               ></Checkbox>
             </CheckboxContainer>
-            <Input
-              value={inputValue}
-              name="title"
-              type="text"
-              autoFocus={true}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                handleInputChange(e.target.value)
-              }
-              ref={register({ required: true })}
-            />
+            <EditInputContainer>
+              <Input
+                value={inputValue}
+                name="title"
+                type="text"
+                error={isInputError}
+                autoFocus={true}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleInputChange(e.target.value)
+                }
+                autoComplete="off"
+                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    onHandleSubmit(inputValue);
+                  }
+                }}
+              />
+            </EditInputContainer>
             <ButtonGroupContainer>
               <ButtonGroup size="small">
-                <Button onClick={handleSubmit(handleApplyEdit)}>適用</Button>
+                <Button onClick={() => onHandleSubmit(inputValue)}>適用</Button>
                 <Button onClick={handleCancelEdit}>中止</Button>
               </ButtonGroup>
             </ButtonGroupContainer>
           </CardContent>
         </Card>
       ) : (
-        <Card p={3}>
+        <Card p={2}>
           <CardContent>
             <CheckboxContainer>
               <Checkbox
@@ -86,8 +102,7 @@ const Task: React.FC<Props> = ({
                 onChange={handleApplyCheck}
               ></Checkbox>
             </CheckboxContainer>
-            {task.title}
-            {"　　　　　[DEBUG]:taskId->" + task.id}
+            <TaskContainer>{task.title}</TaskContainer>
             <ButtonGroupContainer>
               <ButtonGroup size="small">
                 <Button onClick={() => startEdit()}>編集</Button>
@@ -104,16 +119,24 @@ const Task: React.FC<Props> = ({
 export default Task;
 
 const CardContent = styled.div`
+  height: 24px;
   display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const EditInputContainer = styled.div`
+  padding-left: 4%;
 `;
 
 const CheckboxContainer = styled.div`
-  display: inline;
-  padding-right: 24px;
+  padding-left: 2%;
+`;
+
+const TaskContainer = styled.div`
+  padding-left: 5%;
 `;
 
 const ButtonGroupContainer = styled.div`
-  display: inline;
-  text-align: right;
   margin-left: auto;
 `;

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Task from "../../components/Task";
-import { Button, ConfirmModal, Divider, Input, Spacer } from "ingred-ui";
+import { Button, Input, Spacer } from "ingred-ui";
 import { Todo } from "../../types";
-import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import TaskStatus from "../../components/TaskStatus";
-import { findAllByAltText } from "@testing-library/react";
 
 type Props = {
   todos: Todo[];
@@ -57,7 +55,7 @@ export const TaskList: React.FC<Props> = ({
     if (isError) {
       return "空文字は追加できません";
     } else {
-      return "追加したいタスク名を入力してください";
+      return "追加したいタスク名を入力してください, リターンキーを押して保存して下さい";
     }
   };
 
@@ -80,7 +78,7 @@ export const TaskList: React.FC<Props> = ({
             handleInputChange(e.target.value)
           }
           width="80%"
-          onSubmit={() => onHandleSubmit}
+          autoComplete="off"
           onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === "Enter") {
               e.preventDefault();
@@ -106,7 +104,7 @@ export const TaskList: React.FC<Props> = ({
                 handleEdit={onEdit}
                 handleCheck={onCheck}
               ></Task>
-              <TaskSplitLine />
+              <Spacer pt={1} />
             </div>
           ))}
       </TaskListWrapper>
@@ -139,7 +137,7 @@ export const TaskList: React.FC<Props> = ({
                   handleEdit={onEdit}
                   handleCheck={onCheck}
                 ></Task>
-                <TaskSplitLine />
+                <Spacer pt={1} />
               </div>
             ))}
         </TaskListWrapper>
@@ -153,6 +151,7 @@ export const TaskList: React.FC<Props> = ({
 const VisibleButtonContainer = styled.div`
   width: 30%;
   margin: 0 auto;
+  padding-bottom: 2%;
 `;
 
 const TaskListWrapper = styled.div`
@@ -160,17 +159,13 @@ const TaskListWrapper = styled.div`
 `;
 
 const InputContainer = styled.div`
+  margin-bottom: 2%;
   text-align: center;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  background-color: white;
 `;
 
 const MainContainer = styled.div`
-  padding: 6%;
-`;
-
-const TaskSplitLine = styled.hr`
-  border: 0;
-  border-bottom: 1px dashed;
+  padding-top: 5%;
+  padding-right: 2%;
+  padding-left: 2%;
+  background-color: whitesmoke;
 `;
