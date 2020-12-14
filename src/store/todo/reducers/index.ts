@@ -24,9 +24,6 @@ const getInitialFromLocal = () => {
 };
 const initialState: TodoState = getInitialFromLocal();
 
-console.log("ini");
-console.log(initialState);
-
 export const todoReducer = reducerWithInitialState(initialState)
   .case(addTodo, (state, addindTodo) => {
     const newState = {
@@ -38,8 +35,6 @@ export const todoReducer = reducerWithInitialState(initialState)
         isFinish: false,
       }),
     };
-    console.log(newState);
-    console.log(JSON.stringify(newState));
     localStorage.setItem("local", JSON.stringify(newState));
     return newState;
   })

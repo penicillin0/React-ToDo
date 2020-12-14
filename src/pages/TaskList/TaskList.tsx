@@ -59,9 +59,7 @@ export const TaskList: React.FC<Props> = ({
     }
   };
 
-  useEffect(() => {
-    console.log(todos);
-  }, [todos]);
+  useEffect(() => {}, [todos]);
 
   return (
     <MainContainer>
